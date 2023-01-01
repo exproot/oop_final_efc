@@ -23,5 +23,8 @@ namespace efc_console.Entities {
         
         // navigation property
         public BookDetail BookDetail { get; set; }
+
+        // collection navigation property
+        public ICollection<BookAuthor> BookAuthors { get; set; } 
     }
 }

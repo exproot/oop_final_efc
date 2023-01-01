@@ -31,5 +31,4 @@ namespace efc_console.DAL.Mapping {
 
         }
     }
-
 }

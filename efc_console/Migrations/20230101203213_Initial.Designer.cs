@@ -10,8 +10,8 @@ using efc_console.DAL;
 namespace efc_console.Migrations
 {
     [DbContext(typeof(BookAppDbContext))]
-    [Migration("20230101193316_BookDetailOne_To_One")]
-    partial class BookDetailOne_To_One
+    [Migration("20230101203213_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,52 @@ namespace efc_console.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("efc_console.Entities.Author", b =>
+                {
+                    b.Property<int>("AuthorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AuthorId");
+
+                    b.ToTable("Authors");
+
+                    b.HasData(
+                        new
+                        {
+                            AuthorId = 1,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Ertan",
+                            LastName = "Yagmur"
+                        },
+                        new
+                        {
+                            AuthorId = 2,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Yagmur",
+                            LastName = "Ertan"
+                        },
+                        new
+                        {
+                            AuthorId = 3,
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Yagmur",
+                            LastName = "Yagmur"
+                        });
+                });
 
             modelBuilder.Entity("efc_console.Entities.Book", b =>
                 {
@@ -77,6 +123,28 @@ namespace efc_console.Migrations
                         });
                 });
 
+            modelBuilder.Entity("efc_console.Entities.BookAuthor", b =>
+                {
+                    b.Property<int>("BookAuthorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookAuthorId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("BookAuthors");
+                });
+
             modelBuilder.Entity("efc_console.Entities.BookDetail", b =>
                 {
                     b.Property<int>("BookDetailId")
@@ -94,14 +162,16 @@ namespace efc_console.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(2023);
 
                     b.HasKey("BookDetailId");
 
                     b.HasIndex("BookId")
                         .IsUnique();
 
-                    b.ToTable("BookDetail");
+                    b.ToTable("BookDetails");
                 });
 
             modelBuilder.Entity("efc_console.Entities.Category", b =>
@@ -153,6 +223,25 @@ namespace efc_console.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("efc_console.Entities.BookAuthor", b =>
+                {
+                    b.HasOne("efc_console.Entities.Author", "Author")
+                        .WithMany("BookAuthors")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("efc_console.Entities.Book", "Book")
+                        .WithMany("BookAuthors")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("efc_console.Entities.BookDetail", b =>
                 {
                     b.HasOne("efc_console.Entities.Book", "Book")
@@ -164,8 +253,15 @@ namespace efc_console.Migrations
                     b.Navigation("Book");
                 });
 
+            modelBuilder.Entity("efc_console.Entities.Author", b =>
+                {
+                    b.Navigation("BookAuthors");
+                });
+
             modelBuilder.Entity("efc_console.Entities.Book", b =>
                 {
+                    b.Navigation("BookAuthors");
+
                     b.Navigation("BookDetail");
                 });
 
