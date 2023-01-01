@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using efc_console.DAL;
 
 namespace efc_console.Migrations
 {
     [DbContext(typeof(BookAppDbContext))]
-    partial class BookAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230101132933_Book_Category")]
+    partial class Book_Category
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,17 +33,12 @@ namespace efc_console.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("BookId");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Books");
 
@@ -50,21 +47,18 @@ namespace efc_console.Migrations
                         {
                             BookId = 1,
                             BookTitle = "Ertan",
-                            CategoryId = 3,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             BookId = 2,
                             BookTitle = "Yagmur",
-                            CategoryId = 3,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             BookId = 3,
                             BookTitle = "29 Yirmidokuz",
-                            CategoryId = 3,
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -106,21 +100,6 @@ namespace efc_console.Migrations
                             CategoryId = 3,
                             CategoryName = "Novel"
                         });
-                });
-
-            modelBuilder.Entity("efc_console.Entities.Book", b =>
-                {
-                    b.HasOne("efc_console.Entities.Category", "Category")
-                        .WithMany("Books")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("efc_console.Entities.Category", b =>
-                {
-                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }

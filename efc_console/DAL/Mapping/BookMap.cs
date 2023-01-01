@@ -17,13 +17,19 @@ namespace efc_console.DAL.Mapping {
                 .HasMaxLength(250);
 
             builder.Property(b => b.CreatedDate)
-                .HasDefaultValue(DateTime.Now);
+                .HasDefaultValueSql("GETDATE()");
 
             builder.HasData(
-                 new Book { BookId = 1, BookTitle = "Ertan"},
-                 new Book { BookId = 2, BookTitle = "Yagmur" },
-                 new Book { BookId = 3, BookTitle = "29 Yirmidokuz" }
+                 new Book { BookId = 1, BookTitle = "Ertan", CategoryId = 3},
+                 new Book { BookId = 2, BookTitle = "Yagmur", CategoryId = 3},
+                 new Book { BookId = 3, BookTitle = "29 Yirmidokuz", CategoryId = 3 }
                 );
+
+            builder.HasOne(b => b.Category)
+                .WithMany(c => c.Books)
+                .HasForeignKey(b => b.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
