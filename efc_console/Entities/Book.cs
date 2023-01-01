@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace efc_console.Entities {
     public class Book {
-        [Key]
         public int BookId { get; set; }
-        [Required]
-        [MaxLength(50)]
+
         public string BookTitle { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }
